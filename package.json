@@ -6,13 +6,15 @@
     "backend:development": "nodemon app.js",
     "frontend:build": "webpack --progress --config webpack.config.build.js",
     "frontend:development": "webpack serve --progress --config webpack.config.development.js",
-    "start": "npm run development"
+    "start": "concurrently --kill-others \"npm run backend:development\" \"npm run frontend:development\""
   },
   "author": "Dan Soutar",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.14.6",
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "concurrently": "^6.2.0",
     "copy-webpack-plugin": "^9.0.0",
     "css-loader": "^5.2.6",
     "eslint": "^7.29.0",
@@ -35,6 +37,8 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "nodemon": "^2.0.9",
+    "pug": "^3.0.2"
   }
 }
