@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 const express = require('express')
+const errorHandler = require('errorhandler')
 const app = express()
 const port = 3000
 
@@ -28,6 +29,8 @@ const handleLinkResolver = (doc) => {
   return '/'
 }
 
+app.use(errorHandler())
+
 // Middleware to inject prismic context
 app.use( (req, res, next) => {
   res.locals.ctx = {
@@ -48,16 +51,29 @@ app.get('/', (req, res) => {
   res.render('pages/home')
 })
 
-app.get('/about', (req, res) => {
-  initApi(req).then( api => {
-    api.query( Prismic.Predicates.any('document.type', ['meta', 'about'])).then( response => {
-      res.render('pages/about')
-    })
-  } )
+app.get('/about', async (req, res) => {
+  const api = await initApi(req)
+  const about = await api.getSingle('about')
+  const meta = await api.getSingle('meta')
+
+  res.render('pages/about', {
+    about,
+    meta
+  })
 })
 
-app.get('/detail/:id', (req, res) => {
-  res.render('pages/detail')
+app.get('/detail/:uid', async (req, res) => {
+
+  console.log(req);
+
+  const api = await initApi(req)
+  const meta = await api.getSingle('meta')
+  const product = await api.getByUID('product', req.params.uid)
+
+  res.render('pages/detail', {
+    meta,
+    product
+  })
 })
 
 app.get('/collections', (req, res) => {
