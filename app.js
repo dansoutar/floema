@@ -9,6 +9,8 @@ const methodOverride = require('method-override')
 const app = express()
 const port = 3000
 
+const path = require('path')
+
 
 // MIDDLEWARE
 app.use(logger('dev'))
@@ -16,6 +18,7 @@ app.use(errorHandler())
 app.use(methodOverride())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.static(path.join(__dirname, 'public')))
 
 const Prismic = require('@prismicio/client')
 const PrismicDOM = require('prismic-dom')
@@ -57,9 +60,6 @@ app.use( (req, res, next) => {
 
   next()
 })
-
-const path = require('path')
-
 
 // VIEWS CONFIG
 app.set('views', path.join(__dirname, 'views'))
