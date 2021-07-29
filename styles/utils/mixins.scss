@@ -7,9 +7,9 @@
 }
 
 %center {
-  align-items: center;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 @mixin ratio ($height, $width) {

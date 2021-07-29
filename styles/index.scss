@@ -4,11 +4,9 @@
 @import './utils/functions';
 @import './utils/mixins';
 @import './utils/vendors';
-@import './utils/responsive';
+@import './utils/responsive.scss';
 
 @import './shared/descriptions';
-@import './shared/links';
-@import './shared/pages';
 @import './shared/titles';
 @import './shared/vertical-titles';
 
@@ -16,7 +14,6 @@
 @import './base/base';
 
 @import './components/preloader';
-@import './components/transition';
 
 @import './layout/navigation';
 

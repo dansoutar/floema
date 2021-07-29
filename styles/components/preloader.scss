@@ -1,8 +1,9 @@
 .preloader {
-  @extend %center;
   @extend %cover;
+  @extend %center;
 
-  background: $color-contessa;
+  display: none;
+  background-color: $color-contessa;
   color: $color-quarter-spanish-white;
   text-align: center;
   z-index: z('preloader');
@@ -11,15 +12,7 @@
 .preloader__text {
   @extend %title-53;
 
-  max-width: 67rem;
-  opacity: 0;
-
-  span span {
-    @extend %title-53;
-
-    display: inline-block;
-    transform-origin: center center 0.5em;
-  }
+  max-width: 66rem;
 }
 
 .preloader__number {
@@ -27,7 +20,6 @@
 
   bottom: 7.3rem;
   left: 50%;
-  overflow: hidden;
   position: absolute;
   transform: translateX(-50%);
 
@@ -36,6 +28,3 @@
   }
 }
 
-.preloader__number__text {
-  display: inline-block;
-}
