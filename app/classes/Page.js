@@ -1,3 +1,6 @@
+import each from 'lodash/each'
+import GSAP from 'gsap'
+
 export default class Page {
   constructor({
     id,
@@ -16,10 +19,39 @@ export default class Page {
     this.element = document.querySelector(this.selector)
     this.elements = {}
 
-    this.selectorChildren.forEach(entry => {
-      console.log(entry);
+    each(this.selectorChildren, (entry, key) => {
+      if (entry instanceof window.HTMLElement || entry instanceof window.NodeList || Array.isArray(entry) ) {
+        this.elements[key] = entry
+      } else {
+        this.elements[key] = document.querySelectorAll(entry)
+
+        if (this.elements[key].length === 0 ) {
+          this.elements[key] = null
+        } else if (this.elements[key].length === 1) {
+          this.elements[key] = document.querySelector(entry)
+        }
+      }
+
+    })
+  }
+
+
+  show() {
+    return new Promise( resolve => {
+      GSAP.from(this.element, {
+        autoAlpha: 0,
+        onComplete: resolve
+      })
+    })
+  }
+
+  hide() {
+    return new Promise( resolve => {
+      GSAP.to(this.element, {
+        autoAlpha: 0,
+        onComplete: resolve
+      })
     })
 
-    console.log('Create', this.id, this.element);
   }
 }
