@@ -16,12 +16,12 @@
     position: absolute;
     left: 0;
   }
-  
+
   &:before {
     background: linear-gradient(to bottom, $color-contessa 0%, rgba($color-contessa, 0) 100%);
     top: 0;
   }
-  
+
   &:after {
     background: linear-gradient(to top, $color-contessa 0%, rgba($color-contessa, 0) 100%);
     bottom: 0;
@@ -46,7 +46,7 @@
 
 .home__gallery {
   @extend %cover;
- 
+
   visibility: hidden;
 }
 
@@ -73,6 +73,8 @@
   text-transform: uppercase;
   letter-spacing: 0.05rem;
   z-index: 2;
+
+  visibility: visible;
 
   @include media('<phone') {
     bottom: 7.5rem;
