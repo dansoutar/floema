@@ -40,6 +40,8 @@ class App {
 
   onPreloaded() {
     this.preloader.destroy()
+
+    this.page.show()
   }
 
   async onChange(url) {
