@@ -10,9 +10,16 @@ class App {
     this.createPreloader()
     this.createContent()
     this.createPages()
-    this.addLinkListerners()
+
+    this.addEventListeners()
+    this.addLinkListeners()
+
+    this.update()
   }
 
+  /**
+   * Events
+   */
   createPreloader () {
     this.preloader = new Preloader()
     this.preloader.once('completed', this.onPreloaded.bind(this))
@@ -37,6 +44,8 @@ class App {
     }
     this.page = this.pages[this.template]
     this.page.create()
+
+    this.onResize()
   }
 
   async onChange (url) {
@@ -57,15 +66,31 @@ class App {
 
       this.page = this.pages[this.template]
       this.page.create()
+
+      this.onResize()
+
       this.page.show()
 
-      this.addLinkListerners()
+      this.addLinkListeners()
     } else {
       console.log('Error')
     }
   }
 
-  addLinkListerners () {
+  onResize () {
+    if (this.page && this.page.onResize) {
+      this.page.onResize()
+    }
+  }
+
+  /**
+   * Listeners
+   */
+  addEventListeners () {
+    window.addEventListener('resize', this.onResize.bind(this))
+  }
+
+  addLinkListeners () {
     const links = document.querySelectorAll('a')
     each(links, link => {
       link.onclick = event => {
@@ -76,6 +101,17 @@ class App {
         this.onChange(href)
       }
     })
+  }
+
+  /**
+   * Loop
+   */
+  update () {
+    if (this.page && this.page.update) {
+      this.page.update()
+    }
+
+    this.frame = window.requestAnimationFrame(this.update.bind(this))
   }
 }
 

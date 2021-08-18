@@ -1,5 +1,6 @@
 import GSAP from 'gsap'
 import each from 'lodash/each'
+import Prefix from 'prefix'
 
 export default class Page {
   constructor ({
@@ -12,15 +13,27 @@ export default class Page {
       ...elements
     }
     this.id = id
+    this.transformPrefix = Prefix('transform')
+
+    this.scroll = {
+      current: 0,
+      target: 0,
+      last: 0,
+      limit: 0
+    }
+
+    this.onMouseWheelEvent = this.onMouseWheel.bind(this)
   }
 
   create () {
-    if (this.selector instanceof window.HTMLElement) {
-      this.element = this.selector
-    } else {
-      this.element = document.querySelector(this.selector)
-    }
+    this.element = document.querySelector(this.selector)
     this.elements = {}
+
+    this.scroll = {
+      current: 0,
+      target: 0,
+      last: 0
+    }
 
     each(this.selectorChildren, (entry, key) => {
       if (entry instanceof window.HTMLElement || entry instanceof window.NodeList || Array.isArray(entry)) {
@@ -35,8 +48,6 @@ export default class Page {
         }
       }
     })
-
-    console.log(this.element, this.elements)
   }
 
   show () {
@@ -70,15 +81,30 @@ export default class Page {
     })
   }
 
-  onMousewheel(event) {
-    console.log(event)
+  onMouseWheel (event) {
+    const { deltaY } = event
+
+    this.scroll.target += deltaY
+  }
+
+  onResize () {
+    this.scroll.limit = this.elements.wrapper.clientHeight
+  }
+
+  update () {
+    this.scroll.target = GSAP.utils.clamp(0, this.scroll.limit, this.scroll.target)
+    this.scroll.current = GSAP.utils.interpolate(this.scroll.current, this.scroll.target, 0.1)
+
+    if (this.elements.wrapper) {
+      this.elements.wrapper.style[this.transformPrefix] = `translateY(-${this.scroll.current}px)`
+    }
   }
 
   addEventListeners () {
-    window.addEventListener('mousewheel', this.onMousewheel)
+    window.addEventListener('mousewheel', this.onMouseWheelEvent)
   }
 
   removeEventListeners () {
-    window.addEventListener('mousewheel', this.onMousewheel)
+    window.addEventListener('mousewheel', this.onMouseWheelEvent)
   }
 }

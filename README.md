@@ -28,7 +28,7 @@ async onChange (url) {
     this.page.create()
     this.page.show()
 
-    this.addLinkListerners()
+    this.addLinkListeners()
   } else {
     console.log('Error')
   }
