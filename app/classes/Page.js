@@ -1,6 +1,11 @@
 import GSAP from 'gsap'
-import each from 'lodash/each'
+import NormalizeWheel from 'normalize-wheel'
 import Prefix from 'prefix'
+
+import each from 'lodash/each'
+import map from 'lodash/map'
+
+import Title from 'animations/title'
 
 export default class Page {
   constructor ({
@@ -10,17 +15,13 @@ export default class Page {
   }) {
     this.selector = element
     this.selectorChildren = {
-      ...elements
+      ...elements,
+      animationTitles: '[data-animation="title"]'
     }
-    this.id = id
-    this.transformPrefix = Prefix('transform')
 
-    this.scroll = {
-      current: 0,
-      target: 0,
-      last: 0,
-      limit: 0
-    }
+    this.id = id
+
+    this.transformPrefix = Prefix('transform')
 
     this.onMouseWheelEvent = this.onMouseWheel.bind(this)
   }
@@ -39,14 +40,24 @@ export default class Page {
       if (entry instanceof window.HTMLElement || entry instanceof window.NodeList || Array.isArray(entry)) {
         this.elements[key] = entry
       } else {
-        this.elements[key] = document.querySelectorAll(this.selector)
+        this.elements[key] = document.querySelectorAll(entry)
 
         if (this.elements[key].length === 0) {
           this.elements[key] = null
         } else if (this.elements[key].length === 1) {
-          this.elements[key] = document.querySelector(this.selector)
+          this.elements[key] = document.querySelector(entry)
         }
       }
+    })
+
+    this.createAnimations()
+  }
+
+  createAnimations () {
+    this.animationTitles = map(this.elements.animationTitles, element => {
+      return new Title({
+        element
+      })
     })
   }
 
@@ -82,18 +93,26 @@ export default class Page {
   }
 
   onMouseWheel (event) {
-    const { deltaY } = event
+    const { pixelY } = NormalizeWheel(event)
 
-    this.scroll.target += deltaY
+    this.scroll.target += pixelY
   }
 
   onResize () {
-    this.scroll.limit = this.elements.wrapper.clientHeight
+    if (this.elements.wrapper) {
+      this.scroll.limit = this.elements.wrapper.clientHeight - window.innerHeight
+    }
   }
+
 
   update () {
     this.scroll.target = GSAP.utils.clamp(0, this.scroll.limit, this.scroll.target)
     this.scroll.current = GSAP.utils.interpolate(this.scroll.current, this.scroll.target, 0.1)
+
+    if (this.scroll.current < 0.01) {
+      this.scroll.current = 0
+    }
+
 
     if (this.elements.wrapper) {
       this.elements.wrapper.style[this.transformPrefix] = `translateY(-${this.scroll.current}px)`
