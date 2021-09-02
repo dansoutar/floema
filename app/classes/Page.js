@@ -5,7 +5,7 @@ import Prefix from 'prefix'
 import each from 'lodash/each'
 import map from 'lodash/map'
 
-import Title from 'animations/title'
+import Title from 'animations/Title.js'
 
 export default class Page {
   constructor ({
@@ -102,8 +102,9 @@ export default class Page {
     if (this.elements.wrapper) {
       this.scroll.limit = this.elements.wrapper.clientHeight - window.innerHeight
     }
-  }
 
+    each(this.animationTitles, animation => animation.onResize())
+  }
 
   update () {
     this.scroll.target = GSAP.utils.clamp(0, this.scroll.limit, this.scroll.target)
@@ -112,7 +113,6 @@ export default class Page {
     if (this.scroll.current < 0.01) {
       this.scroll.current = 0
     }
-
 
     if (this.elements.wrapper) {
       this.elements.wrapper.style[this.transformPrefix] = `translateY(-${this.scroll.current}px)`
