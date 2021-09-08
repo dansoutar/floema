@@ -6,17 +6,17 @@ import { calculate, split } from 'utils/text'
 
 import each from 'lodash/each'
 
-export default class Title extends Animations {
+export default class Paragraph extends Animations {
   constructor ({ element, elements }) {
     super({
       element,
       elements
     })
 
-    split({ element: this.element })
-    split({ element: this.element })
-
-    this.elementLinesSpans = this.element.querySelectorAll('span span')
+    this.elementLinesSpans = split({
+      append: true,
+      element: this.element
+    })
   }
 
   animateIn () {
@@ -30,8 +30,10 @@ export default class Title extends Animations {
 
     each(this.elementLines, (line, index) => {
       this.timeLineIn.fromTo(line, {
+        autoAlpha: 0,
         y: '100%'
       }, {
+        autoAlpha: 1,
         delay: index * 0.2,
         duration: 1.5,
         ease: 'expo.out',

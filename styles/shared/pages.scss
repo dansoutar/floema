@@ -1,8 +1,9 @@
 %page {
   @extend %cover;
 
-  // opacity: 0;
-  // visibility: hidden;
+  opacity: 0;
+  visibility: hidden;
+
   min-height: 100%;
   height: auto;
   z-index: z('content');

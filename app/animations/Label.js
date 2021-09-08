@@ -6,7 +6,7 @@ import { calculate, split } from 'utils/text'
 
 import each from 'lodash/each'
 
-export default class Title extends Animations {
+export default class Label extends Animations {
   constructor ({ element, elements }) {
     super({
       element,

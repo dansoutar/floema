@@ -3,13 +3,16 @@ import About from 'pages/about'
 import Collections from 'pages/collections'
 import Detail from 'pages/detail'
 import Home from 'pages/home'
-import Preloader from './components/Preloader'
+import Preloader from 'components/Preloader'
+import Navigation from 'components/Navigation'
 
 class App {
   constructor () {
-    this.createPreloader()
     this.createContent()
+
+    this.createPreloader()
     this.createPages()
+    this.createNavigation()
 
     this.addEventListeners()
     this.addLinkListeners()
@@ -20,6 +23,13 @@ class App {
   /**
    * Events
    */
+
+  createNavigation () {
+    this.navigation = new Navigation({
+      template: this.template
+    })
+  }
+
   createPreloader () {
     this.preloader = new Preloader()
     this.preloader.once('completed', this.onPreloaded.bind(this))
@@ -49,7 +59,7 @@ class App {
     this.onResize()
   }
 
-  async onChange (url) {
+  async onChange ({ url, push = true }) {
     await this.page.hide()
 
     const request = await window.fetch(url)
@@ -57,11 +67,19 @@ class App {
     if (request.status === 200) {
       const html = await request.text()
       const div = document.createElement('div')
+
+      if (push) {
+        window.history.pushState({}, '', url)
+      }
+
       div.innerHTML = html
 
       const divContent = div.querySelector('.content')
 
       this.template = divContent.getAttribute('data-template')
+
+      this.navigation.onChange(this.template)
+
       this.content.setAttribute('data-template', this.template)
       this.content.innerHTML = divContent.innerHTML
 
@@ -78,6 +96,13 @@ class App {
     }
   }
 
+  onPopState () {
+    this.onChange({
+      url: window.location.pathname,
+      push: false
+    })
+  }
+
   onResize () {
     if (this.page && this.page.onResize) {
       this.page.onResize()
@@ -88,6 +113,18 @@ class App {
    * Listeners
    */
   addEventListeners () {
+    window.addEventListener('popstate', this.onPopState.bind(this))
+
+    // window.addEventListener('mousewheel', this.onWheel.bind(this))
+
+    // window.addEventListener('mousedown', this.onTouchDown.bind(this))
+    // window.addEventListener('mousemove', this.onTouchMove.bind(this))
+    // window.addEventListener('mouseup', this.onTouchUp.bind(this))
+
+    // window.addEventListener('touchstart', this.onTouchDown.bind(this))
+    // window.addEventListener('touchmove', this.onTouchMove.bind(this))
+    // window.addEventListener('touchend', this.onTouchUp.bind(this))
+
     window.addEventListener('resize', this.onResize.bind(this))
   }
 
@@ -99,7 +136,7 @@ class App {
 
         const { href } = link
 
-        this.onChange(href)
+        this.onChange({ url: href })
       }
     })
   }
