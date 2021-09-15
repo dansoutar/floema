@@ -1,18 +1,24 @@
 import each from 'lodash/each'
+
+// import Detection from 'classes/Detection'
+import Canvas from 'components/Canvas'
+
+import Preloader from 'components/Preloader'
+import Navigation from 'components/Navigation'
+
 import About from 'pages/about'
 import Collections from 'pages/collections'
 import Detail from 'pages/detail'
 import Home from 'pages/home'
-import Preloader from 'components/Preloader'
-import Navigation from 'components/Navigation'
 
 class App {
   constructor () {
     this.createContent()
 
     this.createPreloader()
-    this.createPages()
     this.createNavigation()
+    this.createCanvas()
+    this.createPages()
 
     this.addEventListeners()
     this.addLinkListeners()
@@ -39,6 +45,10 @@ class App {
     this.preloader.destroy()
     this.onResize()
     this.page.show()
+  }
+
+  createCanvas () {
+    this.canvas = new Canvas()
   }
 
   createContent () {
@@ -104,6 +114,10 @@ class App {
   }
 
   onResize () {
+    if (this.canvas && this.canvas.onResize) {
+      this.canvas.onResize()
+    }
+
     if (this.page && this.page.onResize) {
       this.page.onResize()
     }
@@ -145,6 +159,10 @@ class App {
    * Loop
    */
   update () {
+    if (this.canvas && this.canvas.update) {
+      this.canvas.update()
+    }
+
     if (this.page && this.page.update) {
       this.page.update()
     }
