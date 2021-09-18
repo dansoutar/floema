@@ -47,6 +47,8 @@ export default class {
   }
 
   createBounds ({ sizes }) {
+    this.sizes = sizes
+
     this.bounds = this.element.getBoundingClientRect()
 
     this.updateScale(sizes)
@@ -54,23 +56,37 @@ export default class {
     this.updateY()
   }
 
-  updateScale ({ height, width }) {
+  /**
+   * Events
+   */
+  onResize (sizes) {
+    this.createBounds(sizes)
+  }
+
+  /**
+   * Loop
+   */
+  updateScale () {
     this.height = this.bounds.height / window.innerHeight
     this.width = this.bounds.width / window.innerWidth
 
-    this.mesh.scale.x = width * this.width
-    this.mesh.scale.y = height * this.height
+    this.mesh.scale.x = this.sizes.width * this.width
+    this.mesh.scale.y = this.sizes.height * this.height
+
+    this.x = this.bounds.left / window.innerWidth
+    this.y = this.bounds.top / window.innerHeight
   }
 
-  updateX () {
-
+  updateX (x = 0) {
+    this.mesh.position.x = (-this.sizes.width / 2) + (this.mesh.scale.x / 2) + (this.x * this.sizes.width)
   }
 
-  updateY () {
-
+  updateY (y = 0) {
+    this.mesh.position.y = (this.sizes.height / 2) - (this.mesh.scale.y / 2) - (this.y * this.sizes.height)
   }
 
-  onResize (sizes) {
-    this.createBounds(sizes)
+  update (scroll) {
+    this.updateX(scroll.x)
+    this.updateY(scroll.y)
   }
 }

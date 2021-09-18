@@ -17,6 +17,21 @@ export default class {
     this.createGallery()
 
     this.group.setParent(scene)
+
+    this.x = {
+      current: 0,
+      target: 0
+    }
+
+    this.y = {
+      current: 0,
+      target: 0
+    }
+
+    this.scroll = {
+      x: 0,
+      y: 0
+    }
   }
 
   createGeometry () {
@@ -36,7 +51,32 @@ export default class {
     })
   }
 
+  /**
+   * Events
+   */
   onResize (event) {
     map(this.medias, media => media.onResize(event))
+  }
+
+  onTouchDown ({ x, y }) {
+
+  }
+
+  onTouchMove ({ x, y }) {
+
+  }
+
+  onTouchUp ({ x, y }) {
+
+  }
+
+  /**
+   * Update
+   */
+  update () {
+    this.scroll.x = this.scroll.x.current
+    this.scroll.y = this.scroll.y.current
+
+    map(this.medias, media => media.update())
   }
 }
